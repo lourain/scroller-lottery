@@ -1,0 +1,121 @@
+<html>
+<head>
+<script type="text/javascript" src="./jquery-3.0.0.min.js"></script>
+<style>
+.roll{width:50px;border:1px #ccc solid;text-align:center;}
+.active{border-color:red;}
+</style>
+</head>
+<body>
+ 
+ 
+ 
+<table>
+<tr>
+<td class="roll roll-1 active">1<td>
+<td class="roll roll-2">2<td>
+<td class="roll roll-3">3<td>
+<!-- <td class="roll roll-4">4<td> -->
+</tr>
+<tr>
+<!-- <td class="roll roll-10">10<td>
+<td class="roll"><td>
+<td class="roll" ><td>
+<td class="roll roll-5">5<td> -->
+<td class="roll roll-8">8<td>
+<td class="roll"><td>
+<td class="roll roll-4">4<td>
+</tr>
+<tr>
+<!-- <td class="roll roll-9">9<td>
+<td class="roll roll-8">8<td>
+<td class="roll roll-7">7<td>
+<td class="roll roll-6">6<td> -->
+<td class="roll roll-7">7<td>
+<td class="roll roll-6">6<td>
+<td class="roll roll-5">5<td>
+</tr>
+</table>
+ 
+ 
+<button id="start">start</button>
+ 
+<script>
+var index = 1;
+var speed = 600;
+var last_speed;
+var timer = null;
+var cirle = 1;
+var num = 6; //至少跑四圈，然后再减速
+var prize = ~~(Math.random() * 9) + 1; //中奖号码
+// var prize;
+
+$("#start").on("click", function() {
+	index = 1;
+	speed = 600;
+	cirle = 1;
+	prize = ~~(Math.random() * 9) + 1;
+	// prize = 8;
+	stop();
+	roll();
+})
+
+function roll() {
+
+	$(".roll").removeClass("active");
+	$(".roll-" + index).addClass("active");
+	upSpeed();
+	downSpeed();
+	index +=1;
+	index = index == 9 ? 1 : index;
+}
+//加速
+function upSpeed() {
+	if (speed > 100 && cirle < num) speed -= index * 8;
+	stop();
+	start();
+}
+//减速
+function downSpeed() {
+	if (index == 8) cirle++;
+	if (cirle >= num && speed <= 2000) {
+		speed += 30;
+		console.log(speed)
+		stop();
+		start();
+	}
+	if (speed >= (last_speed+30*8)) {//2.这是减速再跑一圈，当再跑到获奖位置时，停止定时器
+		stop();
+		showPrize();
+	}
+	if (speed > 400 && cirle > num+1 && index === prize) {//1.得到获奖时的最后速度，还会继续减速，再跑一圈，动画更好一些		
+			last_speed = speed;
+			console.log(`num:${num},prize:${prize},last_speed:${last_speed}`);
+	}
+}
+
+function start() {
+	timer = setInterval(roll, speed)
+}
+
+function stop() {
+	clearInterval(timer);
+}
+
+function showPrize(x) {
+	/*function abc(a) {
+		alert("price:"+a)
+	}
+	function _abc(a) {
+		return function () {
+			abc(a);
+		}
+	}
+	setTimeout(_abc(x),700)*/
+
+	setTimeout(()=>{alert("prize:"+prize)},700)
+}
+
+</script>
+</body>
+</html>
